@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "797549434034",
+    "firebase_url": "https://osud-final-default-rtdb.firebaseio.com",
+    "project_id": "osud-final",
+    "storage_bucket": "osud-final.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:797549434034:android:0ce740c4f0cdab3fad25ab",
+        "android_client_info": {
+          "package_name": "com.example.osud_final"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "797549434034-et43dcoechhhjlc3tp44japlpce2qcvg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.osud_final",
+            "certificate_hash": "4da6e537b3ea8c6eb16130e4806d808ffb033d83"
+          }
+        },
+        {
+          "client_id": "797549434034-mpl63vs2bvqmjdd5bmasguuvf0t12m48.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvJ8pgipqxsFmzTFl-cvx5YJRBgYCt-Yk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "797549434034-mpl63vs2bvqmjdd5bmasguuvf0t12m48.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

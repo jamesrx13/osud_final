@@ -1,0 +1,45 @@
+name: osud_final
+description: Aplicación de transporte privado con seguimiento GPS.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+#Dependencias de Firebase
+  firebase_core: ^1.8.0
+  firebase_auth: ^3.1.4
+  firebase_database: ^8.0.1
+#Dependencia de Google maps
+  google_maps_flutter: ^2.1.1
+#Dependencia para validar la conectividad 
+  connectivity: ^3.0.6
+#Dependencia style IOS
+  cupertino_icons: ^1.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^1.0.0
+
+flutter:
+  uses-material-design: true
+
+  # Recursos estaticos de la aplicación
+  assets:
+    - images/
+
+  # Fuente de letras usada en la aplicación
+  fonts:
+    - family: Brand-Bold
+      fonts:
+        - asset: fonts/bolt-semibold.ttf
+          
+    - family: Brand-Regular
+      fonts:
+        - asset: fonts/bolt-regular.ttf
+          
+
