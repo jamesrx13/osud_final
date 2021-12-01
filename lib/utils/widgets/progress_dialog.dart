@@ -30,7 +30,7 @@ class PogressDialig extends StatelessWidget {
               ),
               CircularProgressIndicator(
                 valueColor:
-                    AlwaysStoppedAnimation<Color>(UtilsColors.colorAccent),
+                    AlwaysStoppedAnimation<Color>(UtilsColors.colorBlue),
               ),
               SizedBox(
                 width: 25,

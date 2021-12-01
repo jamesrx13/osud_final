@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:osud_final/pages/home_page.dart';
 import 'package:osud_final/pages/login_page.dart';
 import 'package:osud_final/pages/register_page.dart';
+import 'package:osud_final/pages/start_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -54,11 +55,12 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       title: 'Osud',
-      initialRoute: 'login',
+      initialRoute: '/',
       routes: {
         '/': (_) => HomePage(),
         'login': (_) => LoginPage(),
         'register': (_) => RegisterPage(),
+        'start': (_) => StartPage(),
       },
     );
   }
