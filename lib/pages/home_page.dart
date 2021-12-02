@@ -1,9 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:osud_final/helpers/methods_helpers.dart';
 import 'package:osud_final/utils/colors_utils.dart';
 import 'package:osud_final/utils/custom_styles.dart';
+import 'package:osud_final/utils/snackbar_utils.dart';
 import 'package:osud_final/utils/widgets/divisor_utils.dart';
 
 class HomePage extends StatefulWidget {
@@ -26,10 +29,51 @@ class _HomePageState extends State<HomePage> {
   // ignore: prefer_final_fields
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final Completer<GoogleMapController> _completer = Completer();
-
   late GoogleMapController mapController;
-
   double mapBotton = 0;
+  // var localizador = Geolocator;
+  late Position userActualPositioned;
+
+  void setUserActualPosition() async {
+    // Código para la gestión de los permisos de localización
+    bool serviceEnabled;
+    LocationPermission permission;
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    //
+    if (!serviceEnabled) {
+      showSnackBar('Los servicios de locación están desactivados.', context);
+      return;
+    } else {
+      permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          showSnackBar('Ha denegado los permisos de localización.', context);
+          return;
+        }
+      }
+      if (permission == LocationPermission.deniedForever) {
+        showSnackBar(
+            'Los permisos de localización han sido denegados de forma permanente...',
+            context);
+        return;
+      }
+      //Código para obtener la ubicación actial y posicionar la cámara
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.bestForNavigation);
+      userActualPositioned = position;
+      LatLng posicion =
+          LatLng(userActualPositioned.latitude, userActualPositioned.longitude);
+      CameraPosition cameraPosition = CameraPosition(
+        target: posicion,
+        zoom: 19,
+      );
+      mapController
+          .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+      String direccion = await MethodsHelpers.findCordinateAddress(position);
+      print("✔✔✔✔" + direccion);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -132,6 +176,9 @@ class _HomePageState extends State<HomePage> {
             padding: EdgeInsets.only(bottom: mapBotton),
             mapType: MapType.normal,
             myLocationEnabled: true,
+            zoomGesturesEnabled: true,
+            zoomControlsEnabled: false,
+            myLocationButtonEnabled: true,
             initialCameraPosition: HomePage._cameraPosition,
             onMapCreated: (GoogleMapController controller) {
               _completer.complete(controller);
@@ -139,6 +186,7 @@ class _HomePageState extends State<HomePage> {
               setState(() {
                 mapBotton = 300;
               });
+              setUserActualPosition();
             },
           ),
 

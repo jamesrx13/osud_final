@@ -46,7 +46,6 @@ class MyApp extends StatelessWidget {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    const routes = [];
     return MaterialApp(
       theme: ThemeData(
         primarySwatch: Colors.blue,
