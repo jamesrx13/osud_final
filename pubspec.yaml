@@ -9,20 +9,22 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-#Dependencias de Firebase
+# Dependencias de Firebase
   firebase_core: ^1.8.0
   firebase_auth: ^3.1.4
   firebase_database: ^8.0.1
-#Dependencia de Google maps
+# Dependencia de Google maps
   google_maps_flutter: ^2.1.1
-#Dependencia para validar la conectividad 
+# Dependencia para validar la conectividad 
   connectivity: ^3.0.6
-#Dependencia style IOS
+# Dependencia style IOS
   cupertino_icons: ^1.0.2
 # Dependencia del localizador
   geolocator: ^8.0.0
 # Dependencia para la formulación de peticiones
   http: ^0.13.4
+# Dependencia del gestor de estados
+  provider: ^6.0.1
 
 dev_dependencies:
   flutter_test:

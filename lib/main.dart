@@ -6,6 +6,8 @@ import 'package:osud_final/pages/home_page.dart';
 import 'package:osud_final/pages/login_page.dart';
 import 'package:osud_final/pages/register_page.dart';
 import 'package:osud_final/pages/start_page.dart';
+import 'package:osud_final/providers/app_providers.dart';
+import 'package:provider/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,21 +48,24 @@ class MyApp extends StatelessWidget {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    return MaterialApp(
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        fontFamily: 'Brand-Regular',
+    return ChangeNotifierProvider(
+      create: (context) => ProviderApp(),
+      child: MaterialApp(
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+          fontFamily: 'Brand-Regular',
+        ),
+        debugShowCheckedModeBanner: false,
+        title: 'Osud',
+        initialRoute: '/',
+        routes: {
+          '/': (_) => HomePage(),
+          'login': (_) => LoginPage(),
+          'register': (_) => RegisterPage(),
+          'start': (_) => StartPage(),
+        },
       ),
-      debugShowCheckedModeBanner: false,
-      title: 'Osud',
-      initialRoute: '/',
-      routes: {
-        '/': (_) => HomePage(),
-        'login': (_) => LoginPage(),
-        'register': (_) => RegisterPage(),
-        'start': (_) => StartPage(),
-      },
     );
   }
 }
