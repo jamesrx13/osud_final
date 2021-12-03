@@ -1,13 +1,15 @@
+// ignore_for_file: unnecessary_null_comparison
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:osud_final/helpers/methods_helpers.dart';
+import 'package:osud_final/providers/app_providers.dart';
 import 'package:osud_final/utils/colors_utils.dart';
 import 'package:osud_final/utils/custom_styles.dart';
 import 'package:osud_final/utils/snackbar_utils.dart';
 import 'package:osud_final/utils/widgets/divisor_utils.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   //
@@ -70,7 +72,8 @@ class _HomePageState extends State<HomePage> {
       );
       mapController
           .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-      String direccion = await MethodsHelpers.findCordinateAddress(position);
+      String direccion =
+          await MethodsHelpers.findCordinateAddress(position, context);
       print("✔✔✔✔" + direccion);
     }
   }
@@ -324,7 +327,13 @@ class _HomePageState extends State<HomePage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           // ignore: prefer_const_literals_to_create_immutables
                           children: [
-                            const Text('Añadir lugar de residencia.'),
+                            Text((Provider.of<ProviderApp>(context)
+                                        .pickupAddress !=
+                                    null)
+                                ? Provider.of<ProviderApp>(context)
+                                    .pickupAddress
+                                    .addressName
+                                : "Añadir lugar de residencia."),
                             const SizedBox(
                               height: 3,
                             ),
