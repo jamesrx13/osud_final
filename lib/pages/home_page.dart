@@ -1,15 +1,13 @@
-// ignore_for_file: unnecessary_null_comparison
+// ignore_for_file: unnecessary_null_comparison, avoid_print
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:osud_final/helpers/methods_helpers.dart';
-import 'package:osud_final/providers/app_providers.dart';
 import 'package:osud_final/utils/colors_utils.dart';
 import 'package:osud_final/utils/custom_styles.dart';
 import 'package:osud_final/utils/snackbar_utils.dart';
 import 'package:osud_final/utils/widgets/divisor_utils.dart';
-import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   //
@@ -60,21 +58,25 @@ class _HomePageState extends State<HomePage> {
             context);
         return;
       }
-      //Código para obtener la ubicación actial y posicionar la cámara
-      Position position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.bestForNavigation);
-      userActualPositioned = position;
-      LatLng posicion =
-          LatLng(userActualPositioned.latitude, userActualPositioned.longitude);
-      CameraPosition cameraPosition = CameraPosition(
-        target: posicion,
-        zoom: 19,
-      );
-      mapController
-          .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
-      String direccion =
-          await MethodsHelpers.findCordinateAddress(position, context);
-      print("✔✔✔✔" + direccion);
+      try {
+        //Código para obtener la ubicación actual y posicionar la cámara
+        Position position = await Geolocator.getCurrentPosition(
+            desiredAccuracy: LocationAccuracy.bestForNavigation);
+        userActualPositioned = position;
+        LatLng posicion = LatLng(
+            userActualPositioned.latitude, userActualPositioned.longitude);
+        CameraPosition cameraPosition = CameraPosition(
+          target: posicion,
+          zoom: 19,
+        );
+        mapController
+            .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+        String direccion =
+            await MethodsHelpers.findCordinateAddress(position, context);
+        print("✔✔✔✔" + direccion);
+      } catch (e) {
+        showSnackBar('Ha ocurrido un error: $e', context);
+      }
     }
   }
 
@@ -278,36 +280,41 @@ class _HomePageState extends State<HomePage> {
                     const SizedBox(
                       height: 20,
                     ),
-                    Container(
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                          // ignore: prefer_const_literals_to_create_immutables
-                          boxShadow: [
-                            const BoxShadow(
-                              color: Colors.black26,
-                              blurRadius: 5.0,
-                              spreadRadius: 0.5,
-                              offset: Offset(
-                                0.7,
-                                0.7,
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(context, 'search');
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                            // ignore: prefer_const_literals_to_create_immutables
+                            boxShadow: [
+                              const BoxShadow(
+                                color: Colors.black26,
+                                blurRadius: 5.0,
+                                spreadRadius: 0.5,
+                                offset: Offset(
+                                  0.7,
+                                  0.7,
+                                ),
                               ),
-                            ),
-                          ]),
-                      child: Padding(
-                        padding: const EdgeInsets.all(13.0),
-                        child: Row(
-                          // ignore: prefer_const_literals_to_create_immutables
-                          children: [
-                            const Icon(
-                              Icons.search,
-                              color: Colors.blueAccent,
-                            ),
-                            const SizedBox(
-                              width: 10.0,
-                            ),
-                            const Text('Elige tu destino!')
-                          ],
+                            ]),
+                        child: Padding(
+                          padding: const EdgeInsets.all(13.0),
+                          child: Row(
+                            // ignore: prefer_const_literals_to_create_immutables
+                            children: [
+                              const Icon(
+                                Icons.search,
+                                color: Colors.blueAccent,
+                              ),
+                              const SizedBox(
+                                width: 10.0,
+                              ),
+                              const Text('Encuentra tu destino')
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -327,13 +334,7 @@ class _HomePageState extends State<HomePage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           // ignore: prefer_const_literals_to_create_immutables
                           children: [
-                            Text((Provider.of<ProviderApp>(context)
-                                        .pickupAddress !=
-                                    null)
-                                ? Provider.of<ProviderApp>(context)
-                                    .pickupAddress
-                                    .addressName
-                                : "Añadir lugar de residencia."),
+                            const Text("Añadir lugar de residencia."),
                             const SizedBox(
                               height: 3,
                             ),

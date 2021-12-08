@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:osud_final/pages/home_page.dart';
 import 'package:osud_final/pages/login_page.dart';
 import 'package:osud_final/pages/register_page.dart';
+import 'package:osud_final/pages/search_page.dart';
 import 'package:osud_final/pages/start_page.dart';
 import 'package:osud_final/providers/app_providers.dart';
 import 'package:provider/provider.dart';
@@ -60,10 +61,11 @@ class MyApp extends StatelessWidget {
         title: 'Osud',
         initialRoute: '/',
         routes: {
-          '/': (_) => HomePage(),
-          'login': (_) => LoginPage(),
-          'register': (_) => RegisterPage(),
-          'start': (_) => StartPage(),
+          '/': (_) => const HomePage(),
+          'login': (_) => const LoginPage(),
+          'register': (_) => const RegisterPage(),
+          'start': (_) => const StartPage(),
+          'search': (_) => const SearchPage(),
         },
       ),
     );

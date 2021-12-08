@@ -5,7 +5,7 @@ void showSnackBar(String content, BuildContext context) {
     content: Text(
       content,
       textAlign: TextAlign.center,
-      style: TextStyle(fontSize: 15),
+      style: const TextStyle(fontSize: 15),
     ),
   );
   ScaffoldMessenger.of(context).showSnackBar(snackBar);

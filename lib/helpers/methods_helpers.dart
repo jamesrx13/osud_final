@@ -1,5 +1,4 @@
 import 'package:connectivity/connectivity.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:osud_final/helpers/request_helper.dart';
 import 'package:osud_final/models/address_model.dart';
