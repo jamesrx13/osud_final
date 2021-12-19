@@ -4,6 +4,7 @@ import 'package:osud_final/models/predition_model.dart';
 import 'package:osud_final/providers/app_providers.dart';
 import 'package:osud_final/utils/colors_utils.dart';
 import 'package:osud_final/utils/data_utils.dart';
+import 'package:osud_final/utils/snackbar_utils.dart';
 import 'package:osud_final/utils/widgets/divisor_utils.dart';
 import 'package:osud_final/utils/widgets/predit_item_utils.dart';
 import 'package:provider/provider.dart';
@@ -34,6 +35,7 @@ class _SearchPageState extends State<SearchPage> {
           "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$busqueda&key=$apiKey&sessiontoken=123254251&components=country:co";
       var respuesta = await RequestHelper.getRequest(Uri.parse(url));
       if (respuesta == 'failed') {
+        showSnackBar('Error al realizar la petición', context);
         return;
       }
       // ignore: avoid_print

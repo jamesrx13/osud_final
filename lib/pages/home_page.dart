@@ -1,13 +1,17 @@
 // ignore_for_file: unnecessary_null_comparison, avoid_print
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:osud_final/helpers/methods_helpers.dart';
+import 'package:osud_final/providers/app_providers.dart';
 import 'package:osud_final/utils/colors_utils.dart';
 import 'package:osud_final/utils/custom_styles.dart';
 import 'package:osud_final/utils/snackbar_utils.dart';
 import 'package:osud_final/utils/widgets/divisor_utils.dart';
+import 'package:osud_final/utils/widgets/progress_dialog.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   //
@@ -33,6 +37,9 @@ class _HomePageState extends State<HomePage> {
   double mapBotton = 0;
   // var localizador = Geolocator;
   late Position userActualPositioned;
+  //
+  List<LatLng> cordenadasToLine = [];
+  final Set<Polyline> _polyLines = {};
 
   void setUserActualPosition() async {
     // Código para la gestión de los permisos de localización
@@ -67,7 +74,8 @@ class _HomePageState extends State<HomePage> {
             userActualPositioned.latitude, userActualPositioned.longitude);
         CameraPosition cameraPosition = CameraPosition(
           target: posicion,
-          zoom: 19,
+          zoom: 16.151926040649414,
+          bearing: 170,
         );
         mapController
             .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
@@ -184,8 +192,10 @@ class _HomePageState extends State<HomePage> {
             zoomGesturesEnabled: true,
             zoomControlsEnabled: false,
             myLocationButtonEnabled: true,
+            // trafficEnabled: true,
+            polylines: _polyLines,
             initialCameraPosition: HomePage._cameraPosition,
-            onMapCreated: (GoogleMapController controller) {
+            onMapCreated: (GoogleMapController controller) async {
               _completer.complete(controller);
               mapController = controller;
               setState(() {
@@ -281,8 +291,13 @@ class _HomePageState extends State<HomePage> {
                       height: 20,
                     ),
                     GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(context, 'search');
+                      onTap: () async {
+                        var respuesta =
+                            await Navigator.pushNamed(context, 'search');
+                        if (respuesta == 'getDirection') {
+                          await getDirection();
+                          showSnackBar('Ruta trazada', context);
+                        }
                       },
                       child: Container(
                         decoration: BoxDecoration(
@@ -390,5 +405,52 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
     );
+  }
+
+  Future<void> getDirection() async {
+    var start = Provider.of<ProviderApp>(context, listen: false).pickupAddress;
+    var destination =
+        Provider.of<ProviderApp>(context, listen: false).destinationAddress;
+
+    var startPositionet = LatLng(start.latitude, start.longitude);
+    var destinationPositionet =
+        LatLng(destination.latitude, destination.longitude);
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const PogressDialig(
+        status: 'Un momento, por favor.',
+      ),
+    );
+    var detalles = await MethodsHelpers.obtenerDetallesDireccion(
+        startPositionet, destinationPositionet, context);
+    Navigator.pop(context);
+    // print("👍👍👍👍" + detalles.encodePoints);
+    PolylinePoints polylinePoints = PolylinePoints();
+    List<PointLatLng> resultados =
+        polylinePoints.decodePolyline(detalles.encodePoints);
+    print('😂😂😂' + resultados.toString());
+
+    cordenadasToLine.clear();
+    if (resultados.isNotEmpty) {
+      for (PointLatLng pointLatLng in resultados) {
+        cordenadasToLine
+            .add(LatLng(pointLatLng.latitude, pointLatLng.longitude));
+      }
+    }
+    _polyLines.clear();
+    setState(() {
+      Polyline polyline = Polyline(
+        polylineId: const PolylineId('OsudPolyd'),
+        color: Colors.blueAccent,
+        points: cordenadasToLine,
+        jointType: JointType.round,
+        width: 6,
+        startCap: Cap.roundCap,
+        endCap: Cap.roundCap,
+        geodesic: true,
+      );
+      _polyLines.add(polyline);
+    });
   }
 }

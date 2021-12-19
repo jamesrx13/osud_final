@@ -9,4 +9,8 @@
 // URLS API
 // https://maps.googleapis.com/maps/api/place/autocomplete/json?input=Time Square&key=YOUR API KEY&sessiontoken=123254251&components=country:us
 
+//https://maps.googleapis.com/maps/api/place/details/json?placeid={place_id}&key=YOUR API KEY
+
+// https://maps.googleapis.com/maps/api/directions/json?origin={latitude},{longitude}&destination={latitude},{longitude}&mode=driving&key={your_api_key}
+
 String apiKey = "AIzaSyBvJ8pgipqxsFmzTFl-cvx5YJRBgYCt-Yk";
