@@ -38,6 +38,8 @@ class _HomePageState extends State<HomePage> {
   //
   List<LatLng> cordenadasToLine = [];
   final Set<Polyline> _polyLines = {};
+  final Set<Marker> _markers = {};
+  final Set<Circle> _circles = {};
 
   void setUserActualPosition() async {
     // Código para la gestión de los permisos de localización
@@ -188,9 +190,11 @@ class _HomePageState extends State<HomePage> {
             myLocationEnabled: true,
             zoomGesturesEnabled: true,
             zoomControlsEnabled: false,
-            myLocationButtonEnabled: true,
-            // trafficEnabled: true,
+            myLocationButtonEnabled: false,
             polylines: _polyLines,
+            markers: _markers,
+            circles: _circles,
+            mapToolbarEnabled: false,
             initialCameraPosition: HomePage._cameraPosition,
             onMapCreated: (GoogleMapController controller) async {
               _completer.complete(controller);
@@ -201,7 +205,6 @@ class _HomePageState extends State<HomePage> {
               setUserActualPosition();
             },
           ),
-
           // Boton del Drawer
           Positioned(
             top: 40,
@@ -238,7 +241,6 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-
           // Menu inferior
           Positioned(
             left: 0,
@@ -293,7 +295,7 @@ class _HomePageState extends State<HomePage> {
                             await Navigator.pushNamed(context, 'search');
                         if (respuesta == 'getDirection') {
                           await getDirection();
-                          showSnackBar('Ruta trazada', context);
+                          showSnackBar('Mejor ruta encontrada', context);
                         }
                       },
                       child: Container(
@@ -399,6 +401,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
+          // Detalles del viaje
         ],
       ),
     );
@@ -477,5 +480,43 @@ class _HomePageState extends State<HomePage> {
     }
     mapController
         .animateCamera(CameraUpdate.newLatLngBounds(latLngBounds, 100));
+    Marker starMaker = Marker(
+      markerId: const MarkerId('StarMarker'),
+      position: startPositionet,
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+      infoWindow:
+          InfoWindow(title: start.addressName, snippet: 'Ubicación actual'),
+    );
+    Marker destinationMaker = Marker(
+      markerId: const MarkerId('DestinationMarker'),
+      position: destinationPositionet,
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+      infoWindow: InfoWindow(
+          title: destination.addressName, snippet: 'Lugar de destino'),
+    );
+    setState(() {
+      _markers.add(starMaker);
+      _markers.add(destinationMaker);
+    });
+    Circle startCircle = Circle(
+      circleId: const CircleId('StartCircle'),
+      strokeColor: Colors.redAccent,
+      strokeWidth: 3,
+      radius: 12,
+      center: startPositionet,
+      fillColor: UtilsColors.colorOrange,
+    );
+    Circle destinedCircle = Circle(
+      circleId: const CircleId('DestinedCircle'),
+      strokeColor: Colors.green,
+      strokeWidth: 3,
+      radius: 12,
+      center: destinationPositionet,
+      fillColor: UtilsColors.colorGreen,
+    );
+    setState(() {
+      _circles.add(startCircle);
+      _circles.add(destinedCircle);
+    });
   }
 }
