@@ -16,9 +16,7 @@ import 'package:provider/provider.dart';
 class HomePage extends StatefulWidget {
   //
   static const position = CameraPosition(
-    bearing: 192.8334901395799,
     target: LatLng(37.43296265331129, -122.08832357078792),
-    tilt: 59.440717697143555,
     zoom: 19.151926040649414,
   );
   static const CameraPosition _cameraPosition = position;
@@ -74,8 +72,7 @@ class _HomePageState extends State<HomePage> {
             userActualPositioned.latitude, userActualPositioned.longitude);
         CameraPosition cameraPosition = CameraPosition(
           target: posicion,
-          zoom: 16.151926040649414,
-          bearing: 170,
+          zoom: 16,
         );
         mapController
             .animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
@@ -452,5 +449,33 @@ class _HomePageState extends State<HomePage> {
       );
       _polyLines.add(polyline);
     });
+
+    LatLngBounds latLngBounds;
+    if (startPositionet.latitude > destinationPositionet.latitude &&
+        startPositionet.longitude > destinationPositionet.longitude) {
+      latLngBounds = LatLngBounds(
+          southwest: destinationPositionet, northeast: startPositionet);
+    } else if (startPositionet.longitude > destinationPositionet.longitude) {
+      latLngBounds = LatLngBounds(
+        southwest:
+            LatLng(startPositionet.latitude, destinationPositionet.longitude),
+        northeast:
+            LatLng(destinationPositionet.latitude, startPositionet.longitude),
+      );
+    } else if (startPositionet.latitude > destinationPositionet.latitude) {
+      latLngBounds = LatLngBounds(
+        southwest:
+            LatLng(destinationPositionet.latitude, startPositionet.longitude),
+        northeast:
+            LatLng(startPositionet.latitude, destinationPositionet.longitude),
+      );
+    } else {
+      latLngBounds = LatLngBounds(
+        southwest: startPositionet,
+        northeast: destinationPositionet,
+      );
+    }
+    mapController
+        .animateCamera(CameraUpdate.newLatLngBounds(latLngBounds, 100));
   }
 }
