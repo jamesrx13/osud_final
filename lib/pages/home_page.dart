@@ -207,7 +207,7 @@ class _HomePageState extends State<HomePage> {
           ),
           // Boton del Drawer
           Positioned(
-            top: 40,
+            top: 65,
             left: 20,
             child: GestureDetector(
               onTap: () {
@@ -222,10 +222,10 @@ class _HomePageState extends State<HomePage> {
                     const BoxShadow(
                       color: Colors.black26,
                       blurRadius: 5.0,
-                      spreadRadius: 0.5,
+                      spreadRadius: 0.7,
                       offset: Offset(
-                        0.7,
-                        0.7,
+                        0.9,
+                        0.9,
                       ),
                     ),
                   ],
@@ -239,6 +239,84 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
+            ),
+          ),
+          // Barra de busqueda
+          Padding(
+            padding: const EdgeInsets.only(top: 60),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Positioned(
+                  top: 60,
+                  // left: 110,
+                  child: GestureDetector(
+                    onTap: () {},
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        borderRadius: BorderRadius.circular(20),
+                        // ignore: prefer_const_literals_to_create_immutables
+                        boxShadow: [
+                          const BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 5.0,
+                            spreadRadius: 0.7,
+                            offset: Offset(
+                              0.9,
+                              0.9,
+                            ),
+                          ),
+                        ],
+                      ),
+                      child: GestureDetector(
+                        onTap: () async {
+                          var respuesta =
+                              await Navigator.pushNamed(context, 'search');
+                          if (respuesta == 'getDirection') {
+                            await getDirection();
+                            showSnackBar('Mejor ruta encontrada', context);
+                          }
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(25),
+                              // ignore: prefer_const_literals_to_create_immutables
+                              boxShadow: [
+                                const BoxShadow(
+                                  color: Colors.black26,
+                                  blurRadius: 5.0,
+                                  spreadRadius: 0.5,
+                                  offset: Offset(
+                                    0.7,
+                                    0.7,
+                                  ),
+                                ),
+                              ]),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 13.0, horizontal: 50.0),
+                            child: Row(
+                              // ignore: prefer_const_literals_to_create_immutables
+                              children: [
+                                const Icon(
+                                  Icons.search,
+                                  color: Colors.blueAccent,
+                                ),
+                                const SizedBox(
+                                  width: 10.0,
+                                ),
+                                const Text('¿Dónde te gustaría ir?')
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           // Menu inferior
@@ -284,52 +362,6 @@ class _HomePageState extends State<HomePage> {
                       style: TextStyle(
                         fontSize: 21.0,
                         fontFamily: 'Brand-Bold',
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    GestureDetector(
-                      onTap: () async {
-                        var respuesta =
-                            await Navigator.pushNamed(context, 'search');
-                        if (respuesta == 'getDirection') {
-                          await getDirection();
-                          showSnackBar('Mejor ruta encontrada', context);
-                        }
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                            // ignore: prefer_const_literals_to_create_immutables
-                            boxShadow: [
-                              const BoxShadow(
-                                color: Colors.black26,
-                                blurRadius: 5.0,
-                                spreadRadius: 0.5,
-                                offset: Offset(
-                                  0.7,
-                                  0.7,
-                                ),
-                              ),
-                            ]),
-                        child: Padding(
-                          padding: const EdgeInsets.all(13.0),
-                          child: Row(
-                            // ignore: prefer_const_literals_to_create_immutables
-                            children: [
-                              const Icon(
-                                Icons.search,
-                                color: Colors.blueAccent,
-                              ),
-                              const SizedBox(
-                                width: 10.0,
-                              ),
-                              const Text('Encuentra tu destino')
-                            ],
-                          ),
-                        ),
                       ),
                     ),
                     const SizedBox(
@@ -401,7 +433,6 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          // Detalles del viaje
         ],
       ),
     );
