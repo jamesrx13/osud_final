@@ -66,4 +66,22 @@ class MethodsHelpers {
     );
     return direccionData;
   }
+
+  static int getEstimacionViaje(DireccionData data) {
+    // MOTO
+    // Precio Kilometro = $500
+    // Precio minutos = $100
+    // Tarifa Base = $1000
+    // CARRO
+    // Precio Kilometro = $2500
+    // Precio minutos = $100
+    // Tarifa Base = $2000
+
+    // MOTOS
+    double tafifaBase = 1000;
+    double distanciaTarifa = (data.distanceValue / 1000) * 500;
+    double tiempoTarifa = (data.durationValue / 60) * 100;
+    double tarifaTotal = tafifaBase + distanciaTarifa + tiempoTarifa;
+    return tarifaTotal.truncate();
+  }
 }

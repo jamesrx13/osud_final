@@ -13,4 +13,11 @@
 
 // https://maps.googleapis.com/maps/api/directions/json?origin={latitude},{longitude}&destination={latitude},{longitude}&mode=driving&key={your_api_key}
 
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 String apiKey = "AIzaSyBvJ8pgipqxsFmzTFl-cvx5YJRBgYCt-Yk";
+
+const globalInitialCameraPositionet = CameraPosition(
+  target: LatLng(37.43296265331129, -122.08832357078792),
+  zoom: 19.151926040649414,
+);

@@ -5,9 +5,11 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:osud_final/helpers/methods_helpers.dart';
+import 'package:osud_final/models/direccion_data_model.dart';
 import 'package:osud_final/providers/app_providers.dart';
 import 'package:osud_final/utils/colors_utils.dart';
 import 'package:osud_final/utils/custom_styles.dart';
+import 'package:osud_final/utils/data_utils.dart';
 import 'package:osud_final/utils/snackbar_utils.dart';
 import 'package:osud_final/utils/widgets/divisor_utils.dart';
 import 'package:osud_final/utils/widgets/osud_button.dart';
@@ -15,33 +17,35 @@ import 'package:osud_final/utils/widgets/progress_dialog.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
-  //
-  static const position = CameraPosition(
-    target: LatLng(37.43296265331129, -122.08832357078792),
-    zoom: 19.151926040649414,
-  );
-  static const CameraPosition _cameraPosition = position;
-
   const HomePage({Key? key}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   // ignore: prefer_final_fields
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final Completer<GoogleMapController> _completer = Completer();
   late GoogleMapController mapController;
+  double showDetallesCarrera = 0;
+  double principalMenu = 300;
   double mapBotton = 0;
   // var localizador = Geolocator;
   late Position userActualPositioned;
+
   //
   List<LatLng> cordenadasToLine = [];
   final Set<Polyline> _polyLines = {};
   final Set<Marker> _markers = {};
   final Set<Circle> _circles = {};
-
+  DireccionData detallesDeViaje = DireccionData(
+    distanceValue: 0,
+    durationText: '',
+    durationValue: 0,
+    distancetext: '',
+    encodePoints: '',
+  );
   void setUserActualPosition() async {
     // Código para la gestión de los permisos de localización
     bool serviceEnabled;
@@ -86,6 +90,15 @@ class _HomePageState extends State<HomePage> {
         showSnackBar('Ha ocurrido un error: $e', context);
       }
     }
+  }
+
+  void showDetalles() async {
+    await getDirection();
+    setState(() {
+      principalMenu = 0;
+      showDetallesCarrera = 250;
+      mapBotton = 250;
+    });
   }
 
   @override
@@ -196,7 +209,7 @@ class _HomePageState extends State<HomePage> {
             markers: _markers,
             circles: _circles,
             mapToolbarEnabled: false,
-            initialCameraPosition: HomePage._cameraPosition,
+            initialCameraPosition: globalInitialCameraPositionet,
             onMapCreated: (GoogleMapController controller) async {
               _completer.complete(controller);
               mapController = controller;
@@ -275,7 +288,7 @@ class _HomePageState extends State<HomePage> {
                           var respuesta =
                               await Navigator.pushNamed(context, 'search');
                           if (respuesta == 'getDirection') {
-                            await getDirection();
+                            showDetalles();
                             showSnackBar('Mejor ruta encontrada', context);
                           }
                         },
@@ -325,111 +338,145 @@ class _HomePageState extends State<HomePage> {
             left: 0,
             right: 0,
             bottom: 0,
-            child: Container(
-              height: 300,
-              decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(15),
-                    topRight: Radius.circular(15),
+            child: AnimatedSize(
+              vsync: this,
+              duration: const Duration(
+                seconds: 1,
+              ),
+              child: Container(
+                height: principalMenu,
+                decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(15),
+                      topRight: Radius.circular(15),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.black54,
+                          blurRadius: 15.0,
+                          spreadRadius: 0.7,
+                          offset: Offset(
+                            0.9,
+                            0.9,
+                          )),
+                    ]),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 18,
                   ),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.black54,
-                        blurRadius: 15.0,
-                        spreadRadius: 0.7,
-                        offset: Offset(
-                          0.9,
-                          0.9,
-                        )),
-                  ]),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 18,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    const Text(
-                      'Nos alegera tenerte acá!',
-                      style: TextStyle(fontSize: 13.0),
-                    ),
-                    const Text(
-                      '¿Dónde te gustaría ir?',
-                      style: TextStyle(
-                        fontSize: 21.0,
-                        fontFamily: 'Brand-Bold',
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(
+                        height: 5,
                       ),
-                    ),
-                    const SizedBox(
-                      height: 22,
-                    ),
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.home,
-                          color: UtilsColors.colorDimText,
+                      const Text(
+                        'Nos alegera tenerte acá!',
+                        style: TextStyle(fontSize: 13.0),
+                      ),
+                      const Text(
+                        '¿En que te gusta ir?',
+                        style: TextStyle(
+                          fontSize: 21.0,
+                          fontFamily: 'Brand-Bold',
                         ),
-                        const SizedBox(
-                          width: 12,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          // ignore: prefer_const_literals_to_create_immutables
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 5),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Text("Añadir lugar de residencia."),
-                            const SizedBox(
-                              height: 3,
+                            Column(
+                              children: [
+                                Image.asset(
+                                  'images/taxi.png',
+                                  width: 60,
+                                  height: 60,
+                                ),
+                                const Text('Carro'),
+                              ],
                             ),
-                            const Text(
-                              'Ruta a tu casa',
-                              style: TextStyle(
-                                  fontSize: 13,
-                                  color: UtilsColors.colorDimText),
+                            const SizedBox(
+                              width: 40,
+                            ),
+                            Column(
+                              children: [
+                                Image.asset(
+                                  'images/taxi.png',
+                                  width: 60,
+                                  height: 60,
+                                ),
+                                const Text('Moto'),
+                              ],
                             ),
                           ],
                         ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    const Divisor(),
-                    const SizedBox(
-                      height: 16,
-                    ),
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.work,
-                          color: UtilsColors.colorDimText,
-                        ),
-                        const SizedBox(
-                          width: 12,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          // ignore: prefer_const_literals_to_create_immutables
-                          children: [
-                            const Text('Añadir lugar de trabajo.'),
-                            const SizedBox(
-                              height: 3,
-                            ),
-                            const Text(
-                              'Ruta a tu lugar de labor',
-                              style: TextStyle(
-                                  fontSize: 13,
-                                  color: UtilsColors.colorDimText),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
+                      ),
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.home,
+                            color: UtilsColors.colorDimText,
+                          ),
+                          const SizedBox(
+                            width: 12,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            // ignore: prefer_const_literals_to_create_immutables
+                            children: [
+                              const Text("Añadir lugar de residencia."),
+                              const SizedBox(
+                                height: 3,
+                              ),
+                              const Text(
+                                'Ruta a casa',
+                                style: TextStyle(
+                                    fontSize: 13,
+                                    color: UtilsColors.colorDimText),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      const Divisor(),
+                      const SizedBox(
+                        height: 16,
+                      ),
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.work,
+                            color: UtilsColors.colorDimText,
+                          ),
+                          const SizedBox(
+                            width: 12,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            // ignore: prefer_const_literals_to_create_immutables
+                            children: [
+                              const Text('Añadir lugar de trabajo.'),
+                              const SizedBox(
+                                height: 3,
+                              ),
+                              const Text(
+                                'Ruta a tu lugar de labor',
+                                style: TextStyle(
+                                    fontSize: 13,
+                                    color: UtilsColors.colorDimText),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -439,118 +486,127 @@ class _HomePageState extends State<HomePage> {
             left: 0,
             right: 0,
             bottom: 0,
-            child: Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(15),
-                    topRight: Radius.circular(15)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black54,
-                    blurRadius: 15.0,
-                    spreadRadius: 0.7,
-                    offset: Offset(
-                      0.9,
-                      0.9,
-                    ),
-                  ),
-                ],
+            child: AnimatedSize(
+              vsync: this,
+              duration: const Duration(
+                seconds: 1,
               ),
-              height: 250,
-              child: Column(
-                children: [
-                  Container(
-                    decoration: const BoxDecoration(
-                      color: Color.fromARGB(150, 0, 22, 255),
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(15),
-                          topRight: Radius.circular(15)),
+              curve: Curves.easeIn,
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(15),
+                      topRight: Radius.circular(15)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black54,
+                      blurRadius: 15.0,
+                      spreadRadius: 0.7,
+                      offset: Offset(
+                        0.9,
+                        0.9,
+                      ),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                  ],
+                ),
+                height: showDetallesCarrera,
+                child: Column(
+                  children: [
+                    Container(
+                      decoration: const BoxDecoration(
+                        color: Color.fromARGB(150, 0, 22, 255),
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(15),
+                            topRight: Radius.circular(15)),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                        child: Row(
+                          children: [
+                            Image.asset(
+                              'images/taxi.png',
+                              height: 70,
+                              width: 70,
+                            ),
+                            const SizedBox(
+                              width: 15,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              // ignore: prefer_const_literals_to_create_immutables
+                              children: [
+                                const Text(
+                                  'Taxi',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontFamily: 'Brand-Bold',
+                                  ),
+                                ),
+                                Text(
+                                  detallesDeViaje.distancetext,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Expanded(child: Container()),
+                            Text(
+                              (detallesDeViaje != null)
+                                  ? 'Precio estimado: ${MethodsHelpers.getEstimacionViaje(detallesDeViaje)}'
+                                  : 'No hay resultados',
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontFamily: 'Brand-Bold',
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 22,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Row(
+                        // ignore: prefer_const_literals_to_create_immutables
                         children: [
-                          Image.asset(
-                            'images/taxi.png',
-                            height: 70,
-                            width: 70,
+                          const Icon(
+                            Icons.attach_money,
+                            size: 18,
+                            color: UtilsColors.colorTextLight,
                           ),
                           const SizedBox(
-                            width: 15,
+                            width: 16,
                           ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            // ignore: prefer_const_literals_to_create_immutables
-                            children: [
-                              const Text(
-                                'Taxi',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontFamily: 'Brand-Bold',
-                                ),
-                              ),
-                              const Text(
-                                'Distancia',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ],
+                          const Text('Efectivo'),
+                          const SizedBox(
+                            width: 5,
                           ),
-                          Expanded(child: Container()),
-                          const Text(
-                            'CO: 6000',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontFamily: 'Brand-Bold',
-                            ),
+                          const Icon(
+                            Icons.keyboard_arrow_down_outlined,
+                            color: UtilsColors.colorTextLight,
+                            size: 16,
                           ),
                         ],
                       ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 22,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Row(
-                      // ignore: prefer_const_literals_to_create_immutables
-                      children: [
-                        const Icon(
-                          Icons.attach_money,
-                          size: 18,
-                          color: UtilsColors.colorTextLight,
-                        ),
-                        const SizedBox(
-                          width: 16,
-                        ),
-                        const Text('Efectivo'),
-                        const SizedBox(
-                          width: 5,
-                        ),
-                        const Icon(
-                          Icons.keyboard_arrow_down_outlined,
-                          color: UtilsColors.colorTextLight,
-                          size: 16,
-                        ),
-                      ],
+                    const SizedBox(
+                      height: 22,
                     ),
-                  ),
-                  const SizedBox(
-                    height: 22,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: OsudButton(
-                      content: '¡Lo tomo!',
-                      color: Colors.blueAccent,
-                      onPressed: () {},
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: OsudButton(
+                        content: '¡Lo tomo!',
+                        color: Colors.blueAccent,
+                        onPressed: () {},
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -576,6 +632,11 @@ class _HomePageState extends State<HomePage> {
     );
     var detalles = await MethodsHelpers.obtenerDetallesDireccion(
         startPositionet, destinationPositionet, context);
+
+    setState(() {
+      detallesDeViaje = detalles;
+    });
+
     Navigator.pop(context);
     // print("👍👍👍👍" + detalles.encodePoints);
     PolylinePoints polylinePoints = PolylinePoints();
