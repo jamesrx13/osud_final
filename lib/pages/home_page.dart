@@ -10,6 +10,7 @@ import 'package:osud_final/utils/colors_utils.dart';
 import 'package:osud_final/utils/custom_styles.dart';
 import 'package:osud_final/utils/snackbar_utils.dart';
 import 'package:osud_final/utils/widgets/divisor_utils.dart';
+import 'package:osud_final/utils/widgets/osud_button.dart';
 import 'package:osud_final/utils/widgets/progress_dialog.dart';
 import 'package:provider/provider.dart';
 
@@ -430,6 +431,126 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ],
                 ),
+              ),
+            ),
+          ),
+          // Detalles del viaje
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(15),
+                    topRight: Radius.circular(15)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black54,
+                    blurRadius: 15.0,
+                    spreadRadius: 0.7,
+                    offset: Offset(
+                      0.9,
+                      0.9,
+                    ),
+                  ),
+                ],
+              ),
+              height: 250,
+              child: Column(
+                children: [
+                  Container(
+                    decoration: const BoxDecoration(
+                      color: Color.fromARGB(150, 0, 22, 255),
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(15),
+                          topRight: Radius.circular(15)),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                      child: Row(
+                        children: [
+                          Image.asset(
+                            'images/taxi.png',
+                            height: 70,
+                            width: 70,
+                          ),
+                          const SizedBox(
+                            width: 15,
+                          ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            // ignore: prefer_const_literals_to_create_immutables
+                            children: [
+                              const Text(
+                                'Taxi',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontFamily: 'Brand-Bold',
+                                ),
+                              ),
+                              const Text(
+                                'Distancia',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Expanded(child: Container()),
+                          const Text(
+                            'CO: 6000',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontFamily: 'Brand-Bold',
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 22,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Row(
+                      // ignore: prefer_const_literals_to_create_immutables
+                      children: [
+                        const Icon(
+                          Icons.attach_money,
+                          size: 18,
+                          color: UtilsColors.colorTextLight,
+                        ),
+                        const SizedBox(
+                          width: 16,
+                        ),
+                        const Text('Efectivo'),
+                        const SizedBox(
+                          width: 5,
+                        ),
+                        const Icon(
+                          Icons.keyboard_arrow_down_outlined,
+                          color: UtilsColors.colorTextLight,
+                          size: 16,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 22,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: OsudButton(
+                      content: '¡Lo tomo!',
+                      color: Colors.blueAccent,
+                      onPressed: () {},
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
