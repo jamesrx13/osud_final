@@ -18,6 +18,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 String apiKey = "AIzaSyBvJ8pgipqxsFmzTFl-cvx5YJRBgYCt-Yk";
 
 const globalInitialCameraPositionet = CameraPosition(
-  target: LatLng(37.43296265331129, -122.08832357078792),
-  zoom: 19.151926040649414,
+  target: LatLng(4.793608, -73.551486),
+  zoom: 7,
 );

@@ -33,7 +33,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   double mapBotton = 0;
   // var localizador = Geolocator;
   late Position userActualPositioned;
-
+  bool showDrawer = true;
   //
   List<LatLng> cordenadasToLine = [];
   final Set<Polyline> _polyLines = {};
@@ -98,6 +98,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       principalMenu = 0;
       showDetallesCarrera = 250;
       mapBotton = 250;
+      showDrawer = false;
     });
   }
 
@@ -225,7 +226,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             left: 20,
             child: GestureDetector(
               onTap: () {
-                scaffoldKey.currentState!.openDrawer();
+                if (showDrawer) {
+                  scaffoldKey.currentState!.openDrawer();
+                } else {
+                  goToInitialApp();
+                }
               },
               child: Container(
                 decoration: BoxDecoration(
@@ -244,95 +249,95 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     ),
                   ],
                 ),
-                child: const CircleAvatar(
+                child: CircleAvatar(
                   backgroundColor: Colors.white,
                   radius: 20,
                   child: Icon(
-                    Icons.menu,
+                    (showDrawer) ? Icons.menu : Icons.arrow_back_ios,
                     color: Colors.black,
                   ),
                 ),
               ),
             ),
           ),
+
           // Barra de busqueda
-          Padding(
-            padding: const EdgeInsets.only(top: 60),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Positioned(
-                  top: 60,
-                  // left: 110,
-                  child: GestureDetector(
-                    onTap: () {},
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.transparent,
-                        borderRadius: BorderRadius.circular(20),
-                        // ignore: prefer_const_literals_to_create_immutables
-                        boxShadow: [
-                          const BoxShadow(
-                            color: Colors.black26,
-                            blurRadius: 5.0,
-                            spreadRadius: 0.7,
-                            offset: Offset(
-                              0.9,
-                              0.9,
-                            ),
-                          ),
-                        ],
-                      ),
-                      child: GestureDetector(
-                        onTap: () async {
-                          var respuesta =
-                              await Navigator.pushNamed(context, 'search');
-                          if (respuesta == 'getDirection') {
-                            showDetalles();
-                            showSnackBar('Mejor ruta encontrada', context);
-                          }
-                        },
+          (showDrawer)
+              ? Padding(
+                  padding: const EdgeInsets.only(top: 60),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Positioned(
+                        top: 60,
+                        // left: 110,
                         child: Container(
                           decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(25),
-                              // ignore: prefer_const_literals_to_create_immutables
-                              boxShadow: [
-                                const BoxShadow(
-                                  color: Colors.black26,
-                                  blurRadius: 5.0,
-                                  spreadRadius: 0.5,
-                                  offset: Offset(
-                                    0.7,
-                                    0.7,
-                                  ),
+                            color: Colors.transparent,
+                            borderRadius: BorderRadius.circular(20),
+                            // ignore: prefer_const_literals_to_create_immutables
+                            boxShadow: [
+                              const BoxShadow(
+                                color: Colors.black26,
+                                blurRadius: 5.0,
+                                spreadRadius: 0.7,
+                                offset: Offset(
+                                  0.9,
+                                  0.9,
                                 ),
-                              ]),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 13.0, horizontal: 50.0),
-                            child: Row(
-                              // ignore: prefer_const_literals_to_create_immutables
-                              children: [
-                                const Icon(
-                                  Icons.search,
-                                  color: Colors.blueAccent,
+                              ),
+                            ],
+                          ),
+                          child: GestureDetector(
+                            onTap: () async {
+                              var respuesta =
+                                  await Navigator.pushNamed(context, 'search');
+                              if (respuesta == 'getDirection') {
+                                showDetalles();
+                                // showSnackBar('Mejor ruta encontrada', context);
+                              }
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(25),
+                                  // ignore: prefer_const_literals_to_create_immutables
+                                  boxShadow: [
+                                    const BoxShadow(
+                                      color: Colors.black26,
+                                      blurRadius: 5.0,
+                                      spreadRadius: 0.5,
+                                      offset: Offset(
+                                        0.7,
+                                        0.7,
+                                      ),
+                                    ),
+                                  ]),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 13.0, horizontal: 50.0),
+                                child: Row(
+                                  // ignore: prefer_const_literals_to_create_immutables
+                                  children: [
+                                    const Icon(
+                                      Icons.search,
+                                      color: Colors.blueAccent,
+                                    ),
+                                    const SizedBox(
+                                      width: 10.0,
+                                    ),
+                                    const Text('¿Dónde te gustaría ir?')
+                                  ],
                                 ),
-                                const SizedBox(
-                                  width: 10.0,
-                                ),
-                                const Text('¿Dónde te gustaría ir?')
-                              ],
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                ),
-              ],
-            ),
-          ),
+                )
+              : Container(),
           // Menu inferior
           Positioned(
             left: 0,
@@ -731,5 +736,20 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       _circles.add(startCircle);
       _circles.add(destinedCircle);
     });
+  }
+
+  goToInitialApp() {
+    setState(() {
+      cordenadasToLine.clear();
+      _polyLines.clear();
+      _markers.clear();
+      _circles.clear();
+      showDetallesCarrera = 0;
+      principalMenu = 300;
+      mapBotton = 300;
+      showDrawer = true;
+    });
+
+    setUserActualPosition();
   }
 }
