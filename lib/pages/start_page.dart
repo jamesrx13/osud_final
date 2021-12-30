@@ -19,6 +19,13 @@ void validateSesion(BuildContext context) {
 
 class _StartPageState extends State<StartPage> {
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance!
+        .addPostFrameCallback((_) => validateSesion(context));
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(

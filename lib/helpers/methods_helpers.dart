@@ -98,6 +98,7 @@ class MethodsHelpers {
     reference.once().then((DataSnapshot snapshot) {
       if (snapshot.value != null) {
         userData = UserModel.fromSnapshot(snapshot);
+        // ignore: avoid_print
         print('😜 Soy: ' + userData.name);
       }
     });

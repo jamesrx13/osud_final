@@ -23,5 +23,6 @@ const globalInitialCameraPositionet = CameraPosition(
   zoom: 7,
 );
 
+// ignore: prefer_typing_uninitialized_variables
 var currentUser;
 UserModel userData = UserModel(id: '', email: '', cellPhone: '', name: '');
