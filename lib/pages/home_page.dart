@@ -114,6 +114,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    MethodsHelpers.getDataCurrentUser();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,

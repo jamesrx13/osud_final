@@ -14,6 +14,7 @@
 // https://maps.googleapis.com/maps/api/directions/json?origin={latitude},{longitude}&destination={latitude},{longitude}&mode=driving&key={your_api_key}
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:osud_final/models/user_model.dart';
 
 String apiKey = "AIzaSyBvJ8pgipqxsFmzTFl-cvx5YJRBgYCt-Yk";
 
@@ -21,3 +22,6 @@ const globalInitialCameraPositionet = CameraPosition(
   target: LatLng(4.793608, -73.551486),
   zoom: 7,
 );
+
+var currentUser;
+UserModel userData = UserModel(id: '', email: '', cellPhone: '', name: '');

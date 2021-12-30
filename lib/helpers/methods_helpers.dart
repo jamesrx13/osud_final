@@ -1,10 +1,13 @@
 import 'package:connectivity/connectivity.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:osud_final/helpers/request_helper.dart';
 import 'package:osud_final/models/address_model.dart';
 import 'package:osud_final/models/direccion_data_model.dart';
+import 'package:osud_final/models/user_model.dart';
 import 'package:osud_final/providers/app_providers.dart';
 import 'package:osud_final/utils/data_utils.dart';
 import 'package:osud_final/utils/snackbar_utils.dart';
@@ -67,6 +70,7 @@ class MethodsHelpers {
     return direccionData;
   }
 
+  // Estimar duración y precio del viaje
   static int getEstimacionViaje(DireccionData data) {
     // MOTO
     // Precio Kilometro = $500
@@ -83,5 +87,19 @@ class MethodsHelpers {
     double tiempoTarifa = (data.durationValue / 60) * 100;
     double tarifaTotal = tafifaBase + distanciaTarifa + tiempoTarifa;
     return tarifaTotal.truncate();
+  }
+
+  //Obtener la información del usuario
+  static void getDataCurrentUser() async {
+    currentUser = FirebaseAuth.instance.currentUser;
+    String currentUserId = currentUser.uid;
+    DatabaseReference reference =
+        FirebaseDatabase.instance.reference().child("users/$currentUserId");
+    reference.once().then((DataSnapshot snapshot) {
+      if (snapshot.value != null) {
+        userData = UserModel.fromSnapshot(snapshot);
+        print('😜 Soy: ' + userData.name);
+      }
+    });
   }
 }

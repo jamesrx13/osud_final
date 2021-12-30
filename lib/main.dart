@@ -59,7 +59,7 @@ class MyApp extends StatelessWidget {
         ),
         debugShowCheckedModeBanner: false,
         title: 'Osud',
-        initialRoute: '/',
+        initialRoute: 'login',
         routes: {
           '/': (_) => const HomePage(),
           'login': (_) => const LoginPage(),
