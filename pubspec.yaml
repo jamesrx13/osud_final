@@ -27,6 +27,8 @@ dependencies:
   provider: ^6.0.1
 #  Dependencia para decodificar y mostar la linea en el mapa
   flutter_polyline_points: ^1.0.0
+#  Dependencia de animación de texto
+  animated_text_kit: ^4.2.1
 
 
 dev_dependencies:

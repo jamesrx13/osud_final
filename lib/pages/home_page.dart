@@ -1,5 +1,6 @@
 // ignore_for_file: unnecessary_null_comparison, avoid_print
 import 'dart:async';
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
@@ -31,6 +32,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   double showDetallesCarrera = 0;
   double principalMenu = 300;
   double mapBotton = 0;
+  double panelBusquedavehiculo = 0;
   // var localizador = Geolocator;
   late Position userActualPositioned;
   bool showDrawer = true;
@@ -99,6 +101,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       showDetallesCarrera = 250;
       mapBotton = 250;
       showDrawer = false;
+    });
+  }
+
+  void showBusquedavehiculo() {
+    setState(() {
+      showDetallesCarrera = 0;
+      panelBusquedavehiculo = 250;
+      mapBotton = 250;
+      showDrawer = true;
     });
   }
 
@@ -607,10 +618,102 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       child: OsudButton(
                         content: '¡Lo tomo!',
                         color: Colors.blueAccent,
-                        onPressed: () {},
+                        onPressed: () {
+                          showBusquedavehiculo();
+                        },
                       ),
                     ),
                   ],
+                ),
+              ),
+            ),
+          ),
+          //
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: AnimatedSize(
+              vsync: this,
+              duration: const Duration(milliseconds: 150),
+              child: Container(
+                decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(15),
+                        topRight: Radius.circular(15)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 15,
+                        spreadRadius: 0.5,
+                        offset: Offset(
+                          0.7,
+                          0.7,
+                        ),
+                      ),
+                    ]),
+                height: panelBusquedavehiculo,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 23),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      DefaultTextStyle(
+                        style: const TextStyle(
+                          color: UtilsColors.colorTextSemiLight,
+                          fontSize: 22.0,
+                          fontFamily: 'Brand-Bold',
+                        ),
+                        child: AnimatedTextKit(
+                          animatedTexts: [
+                            WavyAnimatedText('Un momento, por favor.'),
+                            WavyAnimatedText(
+                                'Estamos buscando un vehículo para ti :)'),
+                          ],
+                          isRepeatingAnimation: true,
+                          onTap: () {
+                            print("Tap Event");
+                          },
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Container(
+                        height: 50.0,
+                        width: 50.0,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(25.0),
+                          border: Border.all(
+                              width: 1.0,
+                              color: UtilsColors.colorLightGrayFair),
+                        ),
+                        child: const Icon(
+                          Icons.close,
+                          size: 30,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      const SizedBox(
+                        width: double.infinity,
+                        child: Text(
+                          'Cancelar',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
